@@ -1,0 +1,21 @@
+# Limited resources - maximum allowed
+# This container will only ever be allowed 1 cpu core and 256Mb of memory, even if the server is otherwise idle
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kuard
+spec:
+  containers:
+    - image: jdexx/kuard-amd64:1
+      name: kuard
+      resources:
+        requests:
+          cpu: '500m'
+          memory: '128Mi'
+        limits:
+          cpu: '1000m'
+          memory: '256Mi'
+      ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
