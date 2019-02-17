@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: kuard
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kuard
+  template:
+    metadata:
+      labels:
+        app: kuard
+        version: '2'
+    spec:
+      containers:
+        - name: kuard
+          image: jdexx/kuard-amd64:1
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
