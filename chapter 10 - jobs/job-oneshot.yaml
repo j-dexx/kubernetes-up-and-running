@@ -1,0 +1,22 @@
+# The job and pod remains in k8s until it is deleted so logs can be accessed
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: oneshot
+  labels:
+    chapter: jobs
+spec:
+  template:
+    metadata:
+      labels:
+        chapter: jobs
+    spec:
+      containers:
+        - name: kuard
+          image: jdexx/kuard-amd64:1
+          imagePullPolicy: Always
+          args:
+            - '--keygen enable'
+            - '--keygen-exit-on-complete'
+            - '--keygen-num-to-gen=10'
+      restartPolicy: OnFailure
