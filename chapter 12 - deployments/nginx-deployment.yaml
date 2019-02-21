@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  # Deployment waits for 60 seconds after a pod is healthy before moving onto the next pod
+  minReadySeconds: 60
+  # if any stage in the deployment fails to progress in 10 minutes then deployment is marked failed.
+  # progress is any time a pod created or deleted
+  progressDeadlineSeconds: 600
+  replicas: 3
+  # Limit the revision history to 2 weeks of releases as we don't expect to rollback beyond that
+  revisionHistoryLimit: 14
+  selector:
+    matchLabels:
+      run: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: nginx
+      annotations:
+        kubernetes.io/change-cause: "Update nginx to 1.10.2"
+    spec:
+      containers:
+        - image: nginx:1.10.2
+          imagePullPolicy: IfNotPresent
+          name: nginx
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}
